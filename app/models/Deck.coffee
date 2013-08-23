@@ -3,11 +3,11 @@ class window.Deck extends Backbone.Collection
   model: Card
 
   initialize: ->
-    @add _(_.range(1, 53)).shuffle().map (card) ->
+    @add _([1..52]).shuffle().map (number) ->
       new Card
-        rank: card % 13
-        suit: Math.floor(card / 13)
+        rank: number % 13
+        suit: Math.floor(number / 13)
 
-  dealPlayer: -> hand = new Hand [ @pop(), @pop() ], @
+  dealPlayer: -> new Hand [ @pop(), @pop() ], @
 
   dealDealer: -> new Hand [ @pop().flip(), @pop() ], @, true
