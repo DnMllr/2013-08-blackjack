@@ -36,9 +36,11 @@
     AppView.prototype.render = function() {
       this.$el.children().detach();
       this.$el.html(this.template());
-      this.$('.player-hand-container').html(new HandView({
-        collection: this.model.get('playerHand')
-      }).el);
+      (this.model.get('players')).each(function(player) {
+        return this.$('.player-hand-container').html(new HandView({
+          collection: player.get('hand')
+        }));
+      });
       return this.$('.dealer-hand-container').html(new HandView({
         collection: this.model.get('dealerHand')
       }).el);

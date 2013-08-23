@@ -1,0 +1,10 @@
+{
+  "version": 3,
+  "file": "Players.js",
+  "sourceRoot": "../../..",
+  "sources": [
+    "app/models/Players.coffee"
+  ],
+  "names": [],
+  "mappings": ";AAAA;CAAA,GAAA,EAAA;KAAA;oSAAA;;CAAA,CAAM,IAAM;CACV;;;;;CAAA;;CAAA,EAAO,EAAP,CAAA;;CAAA;;CAD2B,OAAQ;CAArC"
+}
