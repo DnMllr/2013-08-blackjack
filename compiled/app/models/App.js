@@ -44,6 +44,7 @@
 
     App.prototype.newRound = function() {
       var _this = this;
+      this.trigger('newRound', this);
       this.set('deck', new Deck());
       (this.get('players')).each(function(player) {
         player.set("done", false);

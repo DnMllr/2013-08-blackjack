@@ -20,6 +20,7 @@ class window.App extends Backbone.Model
       @nextTurn()
 
   newRound: ->
+    @trigger 'newRound', @
     @set 'deck', new Deck()
     (@get 'players').each (player) =>
       player.set "done", false

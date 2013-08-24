@@ -19,7 +19,7 @@
       return this.model.on('change:chips', this.render, this);
     };
 
-    PlayerView.prototype.template = _.template('<h2>Name: <%= name %> Chips: <span class="chips"> <%= chips %> </span></h2>');
+    PlayerView.prototype.template = _.template('<h2>Name: <%= name %> <% if (!isDealer) { %> Chips: <span class="chips"> <%= chips %> </span> <% } %></h2>');
 
     PlayerView.prototype.render = function() {
       var handView;
