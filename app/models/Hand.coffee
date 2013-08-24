@@ -4,8 +4,6 @@ class window.Hand extends Backbone.Collection
 
   initialize: (array) ->
 
-  hit: -> @add(@deck.pop()).last()
-
   scores: ->
     # The scores are an array of potential scores.
     # Usually, that array contains one element. That is the only score.

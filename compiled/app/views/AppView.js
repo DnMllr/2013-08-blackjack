@@ -14,8 +14,7 @@
 
     AppView.prototype.events = {
       "click .hit-button": function() {
-        this.model.get('playerHand').hit();
-        return this.model.get('dealerHand').hit();
+        return this.model.get('currentPlayer').hit();
       },
       "click .stand-button": function() {
         this.model.get('playerHand').stand();
@@ -32,11 +31,12 @@
       this.$el.children().detach();
       return (this.model.get('players')).each(function(player) {
         var container, playerView;
-        container = player.get('isDealer') ? '.dealer-hand-container' : '.player-hand-container';
+        container = (player.get('isDealer') ? '.deal' : '.play') + 'er-hand-container';
         playerView = new PlayerView({
           model: player
         });
-        _this.$el.append($('<div class =#{container} />').html(playerView.render()));
+        _this.$el.append($('<button class="hit-button">Hit</button> <button class="stand-button">Stand</button>'));
+        _this.$el.append($("<div class = " + container + " />").html(playerView.render()));
         return _this.$el;
       });
     };

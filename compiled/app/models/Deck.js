@@ -28,12 +28,8 @@
       }));
     };
 
-    Deck.prototype.dealPlayer = function() {
-      return new Hand([this.pop(), this.pop()], this);
-    };
-
-    Deck.prototype.dealDealer = function() {
-      return new Hand([this.pop().flip(), this.pop()], this, true);
+    Deck.prototype.hitPlayer = function(player) {
+      return (player.get('hand')).add(this.pop());
     };
 
     return Deck;

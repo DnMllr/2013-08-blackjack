@@ -5,13 +5,19 @@ class window.App extends Backbone.Model
     @set 'deck', new Deck()
     players = new Players()
     human = new Player {name: 'player', isDealer: false}
+    #human2 = new Player {name: 'dan', isDealer: false}
+    #human3 = new Player {name: 'brian', isDealer: false}
     dealer = new Player {name: 'dealer', isDealer: true}
-    players.add [human, dealer]
+    players.add [human, dealer] #, human2, human3]
     players.each (player) => @giveCards player
     @set 'currentPlayer', players.first()
     @set 'players', players
 
+    @listenTo (@get 'players'), 'I_want_to_hit', (player) => @addCardToPlayer(player)
+
   giveCards: (player) ->
     deck = @get 'deck'
-    hand = new Hand [deck.pop(), deck.pop()]
+    hand = if player.isDealer then new Hand [deck.pop().flip(), deck.pop()] else new Hand [deck.pop(), deck.pop()]
     player.set 'hand', hand
+
+  addCardToPlayer: (player) -> (@get 'deck').hitPlayer player

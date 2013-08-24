@@ -18,6 +18,10 @@
       return this.set('isDealer', params.isDealer);
     };
 
+    Player.prototype.hit = function() {
+      return this.trigger('I_want_to_hit', this);
+    };
+
     return Player;
 
   })(Backbone.Model);

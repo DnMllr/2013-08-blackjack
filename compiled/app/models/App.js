@@ -30,14 +30,21 @@
         return _this.giveCards(player);
       });
       this.set('currentPlayer', players.first());
-      return this.set('players', players);
+      this.set('players', players);
+      return this.listenTo(this.get('players'), 'I_want_to_hit', function(player) {
+        return _this.addCardToPlayer(player);
+      });
     };
 
     App.prototype.giveCards = function(player) {
       var deck, hand;
       deck = this.get('deck');
-      hand = new Hand([deck.pop(), deck.pop()]);
+      hand = player.isDealer ? new Hand([deck.pop().flip(), deck.pop()]) : new Hand([deck.pop(), deck.pop()]);
       return player.set('hand', hand);
+    };
+
+    App.prototype.addCardToPlayer = function(player) {
+      return (this.get('deck')).hitPlayer(player);
     };
 
     return App;

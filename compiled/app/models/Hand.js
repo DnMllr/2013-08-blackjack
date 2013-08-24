@@ -16,10 +16,6 @@
 
     Hand.prototype.initialize = function(array) {};
 
-    Hand.prototype.hit = function() {
-      return this.add(this.deck.pop()).last();
-    };
-
     Hand.prototype.scores = function() {
       var hasAce, score;
       hasAce = this.reduce(function(memo, card) {
