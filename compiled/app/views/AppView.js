@@ -12,12 +12,6 @@
       return _ref;
     }
 
-    AppView.prototype.template = _.template('\
-    <button class="hit-button">Hit</button> <button class="stand-button">Stand</button>\
-    <div class="player-hand-container"></div>\
-    <div class="dealer-hand-container"></div>\
-  ');
-
     AppView.prototype.events = {
       "click .hit-button": function() {
         this.model.get('playerHand').hit();
@@ -34,16 +28,17 @@
     };
 
     AppView.prototype.render = function() {
+      var _this = this;
       this.$el.children().detach();
-      this.$el.html(this.template());
-      (this.model.get('players')).each(function(player) {
-        return this.$('.player-hand-container').html(new HandView({
-          collection: player.get('hand')
-        }));
+      return (this.model.get('players')).each(function(player) {
+        var container, playerView;
+        container = player.get('isDealer') ? '.dealer-hand-container' : '.player-hand-container';
+        playerView = new PlayerView({
+          model: player
+        });
+        _this.$el.append($('<div class =#{container} />').html(playerView.render()));
+        return _this.$el;
       });
-      return this.$('.dealer-hand-container').html(new HandView({
-        collection: this.model.get('dealerHand')
-      }).el);
     };
 
     return AppView;

@@ -13,22 +13,24 @@
     }
 
     App.prototype.initialize = function() {
-      var _this = this;
+      var dealer, human, players,
+        _this = this;
       this.set('deck', new Deck());
-      this.set('players', new Players());
-      (this.get('players')).add([
-        new Player({
-          player: 'player',
-          isDealer: false
-        }), new Player({
-          player: 'dealer',
-          isDealer: true
-        })
-      ]);
-      (this.get('players')).each(function(player) {
+      players = new Players();
+      human = new Player({
+        name: 'player',
+        isDealer: false
+      });
+      dealer = new Player({
+        name: 'dealer',
+        isDealer: true
+      });
+      players.add([human, dealer]);
+      players.each(function(player) {
         return _this.giveCards(player);
       });
-      return this.set('currentPlayer', (this.get('players')).first());
+      this.set('currentPlayer', players.first());
+      return this.set('players', players);
     };
 
     App.prototype.giveCards = function(player) {
