@@ -14,8 +14,6 @@
 
     HandView.prototype.className = 'hand';
 
-    HandView.prototype.template = _.template('<h2><% if(isDealer){ %>Dealer<% }else{ %>You<% } %> (<span class="score"></span>)</h2>');
-
     HandView.prototype.initialize = function() {
       var _this = this;
       this.collection.on('add remove change', function() {
@@ -26,13 +24,15 @@
 
     HandView.prototype.render = function() {
       this.$el.children().detach();
-      this.$el.html(this.template(this.collection));
+      $(this.$el.html('<span class="score"></span>')).text(this.collection.scores()[0]);
       this.$el.append(this.collection.map(function(card) {
-        return new CardView({
+        var cardView;
+        cardView = new CardView({
           model: card
-        }).$el;
+        });
+        return cardView.$el;
       }));
-      return this.$('.score').text(this.collection.scores()[0]);
+      return this.$el;
     };
 
     return HandView;

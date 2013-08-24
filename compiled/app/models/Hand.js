@@ -14,10 +14,7 @@
 
     Hand.prototype.model = Card;
 
-    Hand.prototype.initialize = function(array, deck, isDealer) {
-      this.deck = deck;
-      this.isDealer = isDealer;
-    };
+    Hand.prototype.initialize = function(array) {};
 
     Hand.prototype.hit = function() {
       return this.add(this.deck.pop()).last();

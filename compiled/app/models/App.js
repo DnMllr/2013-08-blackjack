@@ -13,10 +13,31 @@
     }
 
     App.prototype.initialize = function() {
-      var deck;
-      this.set('deck', deck = new Deck());
-      this.set('playerHand', deck.dealPlayer());
-      return this.set('dealerHand', deck.dealDealer());
+      var dealer, human, players,
+        _this = this;
+      this.set('deck', new Deck());
+      players = new Players();
+      human = new Player({
+        name: 'player',
+        isDealer: false
+      });
+      dealer = new Player({
+        name: 'dealer',
+        isDealer: true
+      });
+      players.add([human, dealer]);
+      players.each(function(player) {
+        return _this.giveCards(player);
+      });
+      this.set('currentPlayer', players.first());
+      return this.set('players', players);
+    };
+
+    App.prototype.giveCards = function(player) {
+      var deck, hand;
+      deck = this.get('deck');
+      hand = new Hand([deck.pop(), deck.pop()]);
+      return player.set('hand', hand);
     };
 
     return App;
