@@ -32,7 +32,8 @@
       this.set('currentPlayer', players.first());
       this.set('players', players);
       return this.listenTo(this.get('players'), 'I_want_to_hit', function(player) {
-        return _this.addCardToPlayer(player);
+        _this.addCardToPlayer(player);
+        return _this.nextTurn(player);
       });
     };
 
@@ -45,6 +46,12 @@
 
     App.prototype.addCardToPlayer = function(player) {
       return (this.get('deck')).hitPlayer(player);
+    };
+
+    App.prototype.nextTurn = function(player) {
+      var index;
+      index = (this.get('players')).models.indexOf(player);
+      return this.set('currentPlayer', (this.get('players')).at(index + 1) || (this.get('players')).first());
     };
 
     return App;
