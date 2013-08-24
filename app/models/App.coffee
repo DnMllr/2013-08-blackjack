@@ -1,19 +1,14 @@
-#todo: refactor to have a game beneath the outer blackjack model
 class window.App extends Backbone.Model
 
   initialize: ->
+    @set 'winners', []
     @set 'deck', new Deck()
     players = new Players()
     human = new Player {name: 'player', isDealer: false}
-    #human2 = new Player {name: 'dan', isDealer: false}
-    #human3 = new Player {name: 'brian', isDealer: false}
     dealer = new Player {name: 'dealer', isDealer: true}
     @set 'dealer', dealer
-    players.add [human, dealer]#, human2, human3]
+    players.add [human, dealer]
     players.each (player) => @giveCards player
-    @set 'winners', []
-    @set 'losers', []
-
     @set 'currentPlayer', players.first()
     @set 'players', players
 
@@ -24,7 +19,6 @@ class window.App extends Backbone.Model
     @listenTo (@get 'players'), 'I_want_to_stand', (player) =>
       player.set 'done', true
       @nextTurn()
-
 
   giveCards: (player) ->
     deck = @get 'deck'
@@ -42,7 +36,7 @@ class window.App extends Backbone.Model
       everyoneIsDone = (@get 'players').all (player) -> player.get 'done'
       if everyoneIsDone
         alert 'GAME ENDED MUTHAFUCKAS'
-        @winnerTester()
+        @findWinners()
         @
       else
         @nextTurn()
@@ -50,22 +44,22 @@ class window.App extends Backbone.Model
       if (@get 'currentPlayer').get 'isDealer'
         (@get 'currentPlayer').stand()
 
-  winnerTester: ->
+  findWinners: ->
+    winners = []
     dealer = @get 'dealer'
-    maxDealerScore = _.max (dealer.get 'hand').actualScores()
-    scoreToBeat = if maxDealerScore < 22 then maxDealerScore else _.min (dealer.get 'hand').actualScores()
+    dealerScores = (score for score in (dealer.get 'hand').actualScores() when score < 22)
+    scoreToBeat = if dealerScores.length then _.max dealerScores else 22
     if scoreToBeat > 21
-      (@get 'players').each (player) =>
-        (@get 'winners').push player unless (player is dealer or player.get 'busted')
+      for player in @get 'players'
+        winners.push player unless (player is dealer) or (player.get 'busted')
     else
       (@get 'players').each (player) =>
         unless player.get 'busted'
-          potentialScores = (player.get 'hand').actualScores()
-          legitScores = []
-          for score in potentialScores
-            if score < 22
-              legitScores.push score
-          bestScore = _.max legitScores
+          legitScores = (score for score in (player.get 'hand').actualScores() when score < 22)
+          bestScore = if legitScores.length then (_.max legitScores) else 0
           if bestScore > scoreToBeat
-            (@get 'winners').push player
-      (@get 'winners').length is 0 and (@get 'winners').push dealer
+            #dealer always wins ties
+            winners.push player
+    winners.length is 0 and winners.push dealer
+    @set 'winners', winners
+    console.log (winner.get 'name' for winner in winners)

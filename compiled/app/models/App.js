@@ -15,6 +15,7 @@
     App.prototype.initialize = function() {
       var dealer, human, players,
         _this = this;
+      this.set('winners', []);
       this.set('deck', new Deck());
       players = new Players();
       human = new Player({
@@ -30,8 +31,6 @@
       players.each(function(player) {
         return _this.giveCards(player);
       });
-      this.set('winners', []);
-      this.set('losers', []);
       this.set('currentPlayer', players.first());
       this.set('players', players);
       this.listenTo(this.get('players'), 'I_want_to_hit', function(player) {
@@ -68,7 +67,7 @@
         });
         if (everyoneIsDone) {
           alert('GAME ENDED MUTHAFUCKAS');
-          this.winnerTester();
+          this.findWinners();
           return this;
         } else {
           return this.nextTurn();
@@ -80,38 +79,66 @@
       }
     };
 
-    App.prototype.winnerTester = function() {
-      var dealer, maxDealerScore, scoreToBeat,
+    App.prototype.findWinners = function() {
+      var dealer, dealerScores, player, score, scoreToBeat, winner, winners, _i, _len, _ref1,
         _this = this;
+      winners = [];
       dealer = this.get('dealer');
-      maxDealerScore = _.max((dealer.get('hand')).actualScores());
-      scoreToBeat = maxDealerScore < 22 ? maxDealerScore : _.min((dealer.get('hand')).actualScores());
-      if (scoreToBeat > 21) {
-        return (this.get('players')).each(function(player) {
-          if (!(player === dealer || player.get('busted'))) {
-            return (_this.get('winners')).push(player);
+      dealerScores = (function() {
+        var _i, _len, _ref1, _results;
+        _ref1 = (dealer.get('hand')).actualScores();
+        _results = [];
+        for (_i = 0, _len = _ref1.length; _i < _len; _i++) {
+          score = _ref1[_i];
+          if (score < 22) {
+            _results.push(score);
           }
-        });
+        }
+        return _results;
+      })();
+      scoreToBeat = dealerScores.length ? _.max(dealerScores) : 22;
+      if (scoreToBeat > 21) {
+        _ref1 = this.get('players');
+        for (_i = 0, _len = _ref1.length; _i < _len; _i++) {
+          player = _ref1[_i];
+          if (!((player === dealer) || (player.get('busted')))) {
+            winners.push(player);
+          }
+        }
       } else {
         (this.get('players')).each(function(player) {
-          var bestScore, legitScores, potentialScores, score, _i, _len;
+          var bestScore, legitScores;
           if (!player.get('busted')) {
-            potentialScores = (player.get('hand')).actualScores();
-            legitScores = [];
-            for (_i = 0, _len = potentialScores.length; _i < _len; _i++) {
-              score = potentialScores[_i];
-              if (score < 22) {
-                legitScores.push(score);
+            legitScores = (function() {
+              var _j, _len1, _ref2, _results;
+              _ref2 = (player.get('hand')).actualScores();
+              _results = [];
+              for (_j = 0, _len1 = _ref2.length; _j < _len1; _j++) {
+                score = _ref2[_j];
+                if (score < 22) {
+                  _results.push(score);
+                }
               }
-            }
-            bestScore = _.max(legitScores);
+              return _results;
+            })();
+            bestScore = legitScores.length ? _.max(legitScores) : 0;
             if (bestScore > scoreToBeat) {
-              return (_this.get('winners')).push(player);
+              return winners.push(player);
             }
           }
         });
-        return (this.get('winners')).length === 0 && (this.get('winners')).push(dealer);
       }
+      winners.length === 0 && winners.push(dealer);
+      this.set('winners', winners);
+      return console.log((function() {
+        var _j, _len1, _results;
+        _results = [];
+        for (_j = 0, _len1 = winners.length; _j < _len1; _j++) {
+          winner = winners[_j];
+          _results.push(winner.get('name'));
+        }
+        return _results;
+      })());
     };
 
     return App;
