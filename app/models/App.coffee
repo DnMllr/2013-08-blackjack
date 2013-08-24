@@ -10,6 +10,7 @@ class window.App extends Backbone.Model
     dealer = new Player {name: 'dealer', isDealer: true}
     players.add [human, dealer]#, human2, human3]
     players.each (player) => @giveCards player
+
     @set 'currentPlayer', players.first()
     @set 'players', players
 
@@ -19,11 +20,25 @@ class window.App extends Backbone.Model
 
   giveCards: (player) ->
     deck = @get 'deck'
-    hand = if player.isDealer then new Hand [deck.pop().flip(), deck.pop()] else new Hand [deck.pop(), deck.pop()]
-    player.set 'hand', hand
+    (player.get 'hand').add(deck.pop())
+    (player.get 'hand').add(deck.pop())
+    if player.get 'isDealer'
+      (player.get 'hand').at(0).flip()
 
   addCardToPlayer: (player) -> (@get 'deck').hitPlayer player
 
-  nextTurn: (player) ->
-    index = (@get 'players').models.indexOf(player)
+  nextTurn: ->
+    index = (@get 'players').models.indexOf(@get 'currentPlayer')
     @set 'currentPlayer', (@get 'players').at(index+1) or (@get 'players').first()
+    if (@get 'currentPlayer').get 'busted'
+      everyoneIsBusted = (@get 'players').all (player) -> player.get 'busted'
+      if everyoneIsBusted
+        alert 'GAME ENDED MUTHAFUCKAS'
+        @
+      else
+        @nextTurn()
+        #index = (@get 'players').models.indexOf(@get 'currentPlayer')
+        #@set 'currentPlayer', (@get 'players').at(index+1) or (@get 'players').first()
+    else
+      if (@get 'currentPlayer').get 'isDealer'
+        (@get 'currentPlayer').hit()

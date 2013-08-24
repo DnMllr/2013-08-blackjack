@@ -11,9 +11,9 @@ class window.AppView extends Backbone.View
 
   render: ->
     @$el.children().detach()
+    @$el.append $('<button class="hit-button">Hit</button> <button class="stand-button">Stand</button>')
     (@model.get 'players').each (player) =>
       container = (if player.get 'isDealer' then '.deal' else '.play') + 'er-hand-container'
       playerView = new PlayerView {model: player}
-      @$el.append $('<button class="hit-button">Hit</button> <button class="stand-button">Stand</button>')
       @$el.append $("<div class = #{ container } />").html playerView.render()
       @$el

@@ -24,7 +24,7 @@
 
     HandView.prototype.render = function() {
       this.$el.children().detach();
-      $(this.$el.html('<span class="score"></span>')).text(this.collection.scores()[0]);
+      $(this.$el.html('<span class="score"></span>')).text(this.collection.scores());
       this.$el.append(this.collection.map(function(card) {
         var cardView;
         cardView = new CardView({

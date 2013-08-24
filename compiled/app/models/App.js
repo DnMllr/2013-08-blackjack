@@ -38,20 +38,38 @@
     };
 
     App.prototype.giveCards = function(player) {
-      var deck, hand;
+      var deck;
       deck = this.get('deck');
-      hand = player.isDealer ? new Hand([deck.pop().flip(), deck.pop()]) : new Hand([deck.pop(), deck.pop()]);
-      return player.set('hand', hand);
+      (player.get('hand')).add(deck.pop());
+      (player.get('hand')).add(deck.pop());
+      if (player.get('isDealer')) {
+        return (player.get('hand')).at(0).flip();
+      }
     };
 
     App.prototype.addCardToPlayer = function(player) {
       return (this.get('deck')).hitPlayer(player);
     };
 
-    App.prototype.nextTurn = function(player) {
-      var index;
-      index = (this.get('players')).models.indexOf(player);
-      return this.set('currentPlayer', (this.get('players')).at(index + 1) || (this.get('players')).first());
+    App.prototype.nextTurn = function() {
+      var everyoneIsBusted, index;
+      index = (this.get('players')).models.indexOf(this.get('currentPlayer'));
+      this.set('currentPlayer', (this.get('players')).at(index + 1) || (this.get('players')).first());
+      if ((this.get('currentPlayer')).get('busted')) {
+        everyoneIsBusted = (this.get('players')).all(function(player) {
+          return player.get('busted');
+        });
+        if (everyoneIsBusted) {
+          alert('GAME ENDED MUTHAFUCKAS');
+          return this;
+        } else {
+          return this.nextTurn();
+        }
+      } else {
+        if ((this.get('currentPlayer')).get('isDealer')) {
+          return (this.get('currentPlayer')).hit();
+        }
+      }
     };
 
     return App;

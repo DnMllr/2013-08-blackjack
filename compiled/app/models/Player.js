@@ -13,9 +13,15 @@
     }
 
     Player.prototype.initialize = function(params) {
+      var _this = this;
       this.set('chips', 0);
       this.set('name', params.name);
-      return this.set('isDealer', params.isDealer);
+      this.set('isDealer', params.isDealer);
+      this.set('busted', false);
+      this.set('hand', new Hand());
+      return this.listenTo(this.get('hand'), 'bust', function() {
+        return _this.set('busted', true);
+      });
     };
 
     Player.prototype.hit = function() {

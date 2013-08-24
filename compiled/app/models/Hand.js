@@ -14,7 +14,11 @@
 
     Hand.prototype.model = Card;
 
-    Hand.prototype.initialize = function(array) {};
+    Hand.prototype.initialize = function(array) {
+      return this.on('add', function() {
+        return _.min(this.scores() > 21 && this.trigger('bust', this));
+      });
+    };
 
     Hand.prototype.scores = function() {
       var hasAce, score;

@@ -3,6 +3,7 @@ class window.Hand extends Backbone.Collection
   model: Card
 
   initialize: (array) ->
+    @on 'add', -> _.min @scores() > 21 and @trigger 'bust', @
 
   scores: ->
     # The scores are an array of potential scores.
