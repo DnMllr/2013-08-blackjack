@@ -25,15 +25,22 @@
         name: 'dealer',
         isDealer: true
       });
+      this.set('dealer', dealer);
       players.add([human, dealer]);
       players.each(function(player) {
         return _this.giveCards(player);
       });
+      this.set('winners', []);
+      this.set('losers', []);
       this.set('currentPlayer', players.first());
       this.set('players', players);
-      return this.listenTo(this.get('players'), 'I_want_to_hit', function(player) {
+      this.listenTo(this.get('players'), 'I_want_to_hit', function(player) {
         _this.addCardToPlayer(player);
-        return _this.nextTurn(player);
+        return _this.nextTurn();
+      });
+      return this.listenTo(this.get('players'), 'I_want_to_stand', function(player) {
+        player.set('done', true);
+        return _this.nextTurn();
       });
     };
 
@@ -52,23 +59,58 @@
     };
 
     App.prototype.nextTurn = function() {
-      var everyoneIsBusted, index;
+      var everyoneIsDone, index;
       index = (this.get('players')).models.indexOf(this.get('currentPlayer'));
       this.set('currentPlayer', (this.get('players')).at(index + 1) || (this.get('players')).first());
-      if ((this.get('currentPlayer')).get('busted')) {
-        everyoneIsBusted = (this.get('players')).all(function(player) {
-          return player.get('busted');
+      if ((this.get('currentPlayer')).get('done')) {
+        everyoneIsDone = (this.get('players')).all(function(player) {
+          return player.get('done');
         });
-        if (everyoneIsBusted) {
+        if (everyoneIsDone) {
           alert('GAME ENDED MUTHAFUCKAS');
+          this.winnerTester();
           return this;
         } else {
           return this.nextTurn();
         }
       } else {
         if ((this.get('currentPlayer')).get('isDealer')) {
-          return (this.get('currentPlayer')).hit();
+          return (this.get('currentPlayer')).stand();
         }
+      }
+    };
+
+    App.prototype.winnerTester = function() {
+      var dealer, maxDealerScore, scoreToBeat,
+        _this = this;
+      dealer = this.get('dealer');
+      maxDealerScore = _.max((dealer.get('hand')).actualScores());
+      scoreToBeat = maxDealerScore < 22 ? maxDealerScore : _.min((dealer.get('hand')).actualScores());
+      if (scoreToBeat > 21) {
+        return (this.get('players')).each(function(player) {
+          if (!(player === dealer || player.get('busted'))) {
+            return (_this.get('winners')).push(player);
+          }
+        });
+      } else {
+        (this.get('players')).each(function(player) {
+          var bestScore, legitScores, potentialScores, score, _i, _len;
+          if (!player.get('busted')) {
+            potentialScores = (player.get('hand')).actualScores();
+            legitScores = [];
+            for (_i = 0, _len = potentialScores.length; _i < _len; _i++) {
+              score = potentialScores[_i];
+              if (score < 22) {
+                legitScores.push(score);
+              }
+            }
+            bestScore = _.max(legitScores);
+            if (bestScore > scoreToBeat) {
+              return (_this.get('winners')).push(player);
+            }
+          }
+        });
+        return (this.get('winners')).length === 0 && (this.get('winners')).push(dealer);
       }
     };
 

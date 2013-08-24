@@ -3,7 +3,24 @@ class window.Hand extends Backbone.Collection
   model: Card
 
   initialize: (array) ->
-    @on 'add', -> _.min @scores() > 21 and @trigger 'bust', @
+    @on 'add', ->
+      minScore = _.min @actualScores()
+      console.log 'Minscore ' + minScore
+      if minScore > 21
+        @trigger 'done', @
+        @trigger 'busted', @
+      21 in @actualScores and @trigger 'done', @
+
+  actualScores: ->
+    hasAce = @reduce (memo, card) ->
+      memo or card.get('value') is 1
+    , false
+    score = @reduce (score, card) ->
+      score + card.get('value')
+    , 0
+    score = if hasAce then [score, score + 10] else [score]
+    cardstr = @map (card) -> "#{ card.attributes.rank } of #{ card.attributes.suitName }"
+    score
 
   scores: ->
     # The scores are an array of potential scores.

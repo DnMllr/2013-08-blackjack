@@ -17,15 +17,23 @@
       this.set('chips', 0);
       this.set('name', params.name);
       this.set('isDealer', params.isDealer);
+      this.set('done', false);
       this.set('busted', false);
       this.set('hand', new Hand());
-      return this.listenTo(this.get('hand'), 'bust', function() {
+      this.listenTo(this.get('hand'), 'busted', function() {
         return _this.set('busted', true);
+      });
+      return this.listenTo(this.get('hand'), 'done', function() {
+        return _this.set('done', true);
       });
     };
 
     Player.prototype.hit = function() {
       return this.trigger('I_want_to_hit', this);
+    };
+
+    Player.prototype.stand = function() {
+      return this.trigger('I_want_to_stand', this);
     };
 
     return Player;

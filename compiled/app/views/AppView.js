@@ -17,8 +17,7 @@
         return this.model.get('currentPlayer').hit();
       },
       "click .stand-button": function() {
-        this.model.get('playerHand').stand();
-        return this.model.get('dealerHand').hit();
+        return this.model.get('currentPlayer').stand();
       }
     };
 
