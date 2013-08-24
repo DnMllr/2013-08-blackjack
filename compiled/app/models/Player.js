@@ -14,7 +14,8 @@
 
     Player.prototype.initialize = function(params) {
       var _this = this;
-      this.set('chips', 0);
+      this.set('chips', 500);
+      this.set('currentBet', 0);
       this.set('name', params.name);
       this.set('isDealer', params.isDealer);
       this.set('done', false);
@@ -34,6 +35,10 @@
 
     Player.prototype.stand = function() {
       return this.trigger('I_want_to_stand', this);
+    };
+
+    Player.prototype.bet = function(percent) {
+      return this.set('currentBet', (this.get('chips')) * (percent / 100));
     };
 
     return Player;

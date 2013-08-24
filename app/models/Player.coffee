@@ -1,6 +1,7 @@
 class window.Player extends Backbone.Model
   initialize: (params) ->
-    @set 'chips', 0
+    @set 'chips', 500
+    @set 'currentBet', 0
     @set 'name', params.name
     @set 'isDealer', params.isDealer
     @set 'done', false
@@ -11,3 +12,5 @@ class window.Player extends Backbone.Model
 
   hit: -> @trigger 'I_want_to_hit', @
   stand: -> @trigger 'I_want_to_stand', @
+
+  bet: (percent) -> @set 'currentBet', (@get 'chips') * (percent/100)

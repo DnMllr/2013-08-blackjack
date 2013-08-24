@@ -1,7 +1,6 @@
 class window.App extends Backbone.Model
 
   initialize: ->
-    @set 'winners', []
     @set 'deck', new Deck()
     players = new Players()
     human = new Player {name: 'player', isDealer: false}
@@ -21,7 +20,6 @@ class window.App extends Backbone.Model
       @nextTurn()
 
   newRound: ->
-    @set 'winners', []
     @set 'deck', new Deck()
     (@get 'players').each (player) =>
       player.set "done", false
@@ -56,6 +54,7 @@ class window.App extends Backbone.Model
 
   findWinners: ->
     winners = []
+    losers = []
     dealer = @get 'dealer'
     dealerScores = (score for score in (dealer.get 'hand').actualScores() when score < 22)
     scoreToBeat = if dealerScores.length then _.max dealerScores else 22
@@ -64,15 +63,19 @@ class window.App extends Backbone.Model
         winners.push player unless (player is dealer) or (player.get 'busted')
     else
       (@get 'players').each (player) =>
-        unless player.get 'busted'
+        if not player.get 'busted'
           legitScores = (score for score in (player.get 'hand').actualScores() when score < 22)
           bestScore = if legitScores.length then (_.max legitScores) else 0
           if bestScore > scoreToBeat
             #dealer always wins ties
             winners.push player
+          else
+            losers.push player
+        else
+          losers.push player
     winners.length is 0 and winners.push dealer
-    @set 'winners', winners
-    console.log (winner.get 'name' for winner in winners)
     for winner in winners
-      winner.set('chips', (winner.get 'chips') + 1)
+      winner.set 'chips', ((winner.get 'chips') + winner.get 'currentBet')
+    for loser in losers
+      loser.set 'chips', ((loser.get 'chips') - loser.get 'currentBet')
     @newRound()

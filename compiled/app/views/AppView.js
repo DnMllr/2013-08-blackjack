@@ -18,6 +18,18 @@
       },
       "click .stand-button": function() {
         return this.model.get('currentPlayer').stand();
+      },
+      "click .bet10-button": function() {
+        return this.model.get('currentPlayer').bet(10);
+      },
+      "click .bet20-button": function() {
+        return this.model.get('currentPlayer').bet(20);
+      },
+      "click .bet50-button": function() {
+        return this.model.get('currentPlayer').bet(50);
+      },
+      "click .bet100-button": function() {
+        return this.model.get('currentPlayer').bet(100);
       }
     };
 
@@ -29,6 +41,10 @@
       var _this = this;
       this.$el.children().detach();
       this.$el.append($('<button class="hit-button">Hit</button> <button class="stand-button">Stand</button>'));
+      this.$el.append($('<button class="bet10-button">Bet 10%</button>'));
+      this.$el.append($('<button class="bet20-button">Bet 20%</button>'));
+      this.$el.append($('<button class="bet50-button">Bet 50%</button>'));
+      this.$el.append($('<button class="bet100-button">Bet 100%</button>'));
       return (this.model.get('players')).each(function(player) {
         var container, playerView;
         container = (player.get('isDealer') ? '.deal' : '.play') + 'er-hand-container';
