@@ -15,7 +15,8 @@
     PlayerView.prototype.initialize = function() {
       var playerType;
       playerType = this.model.isDealer ? 'dealer' : 'player';
-      return this.$el.addClass(playerType);
+      this.$el.addClass(playerType);
+      return this.model.on('change:chips', this.render, this);
     };
 
     PlayerView.prototype.template = _.template('<h2>Name: <%= name %> Chips: <span class="chips"> <%= chips %> </span></h2>');

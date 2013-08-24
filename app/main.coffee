@@ -2,8 +2,9 @@ new AppView(model: new App()).$el.appendTo 'body'
 
 
 
-#TODO: listento this.model.on(change:currentplayer),
-#       and when it changes, see if it's the dealer
-#       if so, make the dealer hit
+#TODO: listen to this.model.on('finished')
 
-#TODOL listen to this.model.on('finished')
+#TODO: players out here, since they remain constant thruout rounds (aka "Apps")
+#TODO: rename App to game, or create new Game.js class and replace with contents of App
+#TODO: when round is over, award winners, punish losers
+#TODO: when round is over, 

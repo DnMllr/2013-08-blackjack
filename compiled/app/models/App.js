@@ -43,8 +43,21 @@
       });
     };
 
+    App.prototype.newRound = function() {
+      var _this = this;
+      this.set('winners', []);
+      this.set('deck', new Deck());
+      (this.get('players')).each(function(player) {
+        player.set("done", false);
+        player.set("busted", false);
+        return _this.giveCards(player);
+      });
+      return this.set('currentPlayer', (this.get('players')).first());
+    };
+
     App.prototype.giveCards = function(player) {
       var deck;
+      (player.get('hand')).reset();
       deck = this.get('deck');
       (player.get('hand')).add(deck.pop());
       (player.get('hand')).add(deck.pop());
@@ -80,7 +93,7 @@
     };
 
     App.prototype.findWinners = function() {
-      var dealer, dealerScores, player, score, scoreToBeat, winner, winners, _i, _len, _ref1,
+      var dealer, dealerScores, player, score, scoreToBeat, winner, winners, _i, _j, _len, _len1, _ref1,
         _this = this;
       winners = [];
       dealer = this.get('dealer');
@@ -130,7 +143,7 @@
       }
       winners.length === 0 && winners.push(dealer);
       this.set('winners', winners);
-      return console.log((function() {
+      console.log((function() {
         var _j, _len1, _results;
         _results = [];
         for (_j = 0, _len1 = winners.length; _j < _len1; _j++) {
@@ -139,6 +152,11 @@
         }
         return _results;
       })());
+      for (_j = 0, _len1 = winners.length; _j < _len1; _j++) {
+        winner = winners[_j];
+        winner.set('chips', (winner.get('chips')) + 1);
+      }
+      return this.newRound();
     };
 
     return App;

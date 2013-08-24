@@ -20,7 +20,17 @@ class window.App extends Backbone.Model
       player.set 'done', true
       @nextTurn()
 
+  newRound: ->
+    @set 'winners', []
+    @set 'deck', new Deck()
+    (@get 'players').each (player) =>
+      player.set "done", false
+      player.set "busted", false
+      @giveCards player
+    @set 'currentPlayer', (@get 'players').first()
+
   giveCards: (player) ->
+    (player.get 'hand').reset()
     deck = @get 'deck'
     (player.get 'hand').add(deck.pop())
     (player.get 'hand').add(deck.pop())
@@ -63,3 +73,6 @@ class window.App extends Backbone.Model
     winners.length is 0 and winners.push dealer
     @set 'winners', winners
     console.log (winner.get 'name' for winner in winners)
+    for winner in winners
+      winner.set('chips', (winner.get 'chips') + 1)
+    @newRound()

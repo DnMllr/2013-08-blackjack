@@ -29,18 +29,18 @@
     };
 
     Hand.prototype.actualScores = function() {
-      var cardstr, hasAce, score;
+      var hasAce, score;
       hasAce = this.reduce(function(memo, card) {
         return memo || card.get('value') === 1;
       }, false);
       score = this.reduce(function(score, card) {
         return score + card.get('value');
       }, 0);
-      score = hasAce ? [score, score + 10] : [score];
-      cardstr = this.map(function(card) {
-        return "" + card.attributes.rank + " of " + card.attributes.suitName;
-      });
-      return score;
+      if (hasAce) {
+        return [score, score + 10];
+      } else {
+        return [score];
+      }
     };
 
     Hand.prototype.scores = function() {

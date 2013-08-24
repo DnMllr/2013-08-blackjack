@@ -18,9 +18,7 @@ class window.Hand extends Backbone.Collection
     score = @reduce (score, card) ->
       score + card.get('value')
     , 0
-    score = if hasAce then [score, score + 10] else [score]
-    cardstr = @map (card) -> "#{ card.attributes.rank } of #{ card.attributes.suitName }"
-    score
+    if hasAce then [score, score + 10] else [score]
 
   scores: ->
     # The scores are an array of potential scores.
