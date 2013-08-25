@@ -4,7 +4,7 @@ class window.Card extends Backbone.Model
     @set
       revealed: true
       value: if !params.rank or 10 < params.rank then 10 else params.rank
-      suitName: ['Spades', 'Diamonds', 'Clubs', 'Hearts'][params.suit]
+      suitName: ['Spades', 'Diamonds', 'Clubs', 'Hearts'][params.suit % 4]
       rankName: switch params.rank
         when 0 then 'King'
         when 1 then 'Ace'

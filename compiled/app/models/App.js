@@ -69,6 +69,27 @@
       return (this.get('deck')).hitPlayer(player);
     };
 
+    App.prototype.chooseDealerAction = function() {
+      var score, scores;
+      scores = ((this.get('currentPlayer')).get('hand')).actualScores();
+      score = _.max((function() {
+        var _i, _len, _results;
+        _results = [];
+        for (_i = 0, _len = scores.length; _i < _len; _i++) {
+          score = scores[_i];
+          if (score < 22) {
+            _results.push(score);
+          }
+        }
+        return _results;
+      })());
+      if (score < 17) {
+        return (this.get('currentPlayer')).hit();
+      } else {
+        return (this.get('currentPlayer')).stand();
+      }
+    };
+
     App.prototype.nextTurn = function() {
       var everyoneIsDone, index;
       index = (this.get('players')).models.indexOf(this.get('currentPlayer'));
@@ -86,7 +107,7 @@
         }
       } else {
         if ((this.get('currentPlayer')).get('isDealer')) {
-          return (this.get('currentPlayer')).stand();
+          return this.chooseDealerAction();
         }
       }
     };

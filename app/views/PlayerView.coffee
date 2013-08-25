@@ -4,7 +4,7 @@ class window.PlayerView extends Backbone.View
     playerType = if @model.isDealer then 'dealer' else 'player'
     @$el.addClass(playerType)
     @model.on 'change:chips', @render, @
-  #TODO: grey out buttons once bet is in
+
   #TODO: display bet amount
   template: _.template '<h2>Name: <%= name %> <% if (!isDealer) { %> Chips: <span class="chips"> <%= chips %> </span> <% } %></h2>'
 

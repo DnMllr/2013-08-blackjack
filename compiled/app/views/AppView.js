@@ -19,44 +19,39 @@
       "click .stand-button": function() {
         return this.model.get('currentPlayer').stand();
       },
-      "click .bet10-button": function() {
-        this.$('.better').attr('disabled', true);
-        return this.model.get('currentPlayer').bet(10);
-      },
-      "click .bet20-button": function() {
-        this.$('.better').attr('disabled', true);
-        return this.model.get('currentPlayer').bet(20);
-      },
-      "click .bet50-button": function() {
-        this.$('.better').attr('disabled', true);
-        return this.model.get('currentPlayer').bet(50);
-      },
-      "click .bet100-button": function() {
-        this.$('.better').attr('disabled', true);
-        return this.model.get('currentPlayer').bet(100);
+      "click .better": function(event) {
+        this.toggleButtons();
+        return this.model.get('currentPlayer').bet($(event.currentTarget).data('amount'));
       }
     };
 
     AppView.prototype.initialize = function() {
       var _this = this;
       this.listenTo(this.model, 'newRound', function() {
-        return _this.reenableButtons();
+        return _this.toggleButtons();
       });
       return this.render();
     };
 
-    AppView.prototype.reenableButtons = function() {
-      return this.$('.better').removeAttr('disabled');
+    AppView.prototype.toggleButtons = function() {
+      return this.$('button').each(function(index, button) {
+        button = $(button);
+        if (button.attr('disabled')) {
+          return button.removeAttr('disabled');
+        } else {
+          return button.attr('disabled', true);
+        }
+      });
     };
 
     AppView.prototype.render = function() {
       var _this = this;
       this.$el.children().detach();
-      this.$el.append($('<button class="hit-button">Hit</button> <button class="stand-button">Stand</button>'));
-      this.$el.append($('<button class="better bet10-button">Bet 10%</button>'));
-      this.$el.append($('<button class="better bet20-button">Bet 20%</button>'));
-      this.$el.append($('<button class="better bet50-button">Bet 50%</button>'));
-      this.$el.append($('<button class="better bet100-button">Bet 100%</button>'));
+      this.$el.append($('<button class="hit-button" disabled>Hit</button> <button class="stand-button" disabled>Stand</button>'));
+      this.$el.append($('<button class="better bet10-button">Bet 10%</button>').data('amount', 10));
+      this.$el.append($('<button class="better bet20-button">Bet 20%</button>').data('amount', 20));
+      this.$el.append($('<button class="better bet50-button">Bet 50%</button>').data('amount', 50));
+      this.$el.append($('<button class="better bet100-button">Bet 100%</button>').data('amount', 100));
       return (this.model.get('players')).each(function(player) {
         var container, playerView;
         container = (player.get('isDealer') ? '.deal' : '.play') + 'er-hand-container';

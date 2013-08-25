@@ -25,8 +25,16 @@
     };
 
     CardView.prototype.render = function() {
+      var rank;
       this.$el.children().detach().end().html;
-      this.$el.html(this.template(this.model.attributes));
+      rank = this.model.get('rankName');
+      console.log(this.model.get('suitName'));
+      rank = typeof rank === !'number' ? rank.toString()[0] : rank;
+      if (this.model.get('revealed')) {
+        this.$el.html(Poker.getCardImage(140, (this.model.get('suitName')).toLowerCase(), rank));
+      } else {
+        this.$el.html(Poker.getBackImage(140, (this.model.get('suitName')).toLowerCase(), rank));
+      }
       if (!this.model.get('revealed')) {
         return this.$el.addClass('covered');
       }

@@ -5,33 +5,26 @@ class window.AppView extends Backbone.View
       @model.get('currentPlayer').hit()
     "click .stand-button": ->
       @model.get('currentPlayer').stand()
-    "click .bet10-button": ->
-      @$('.better').attr('disabled', true)
-      @model.get('currentPlayer').bet(10)
-    "click .bet20-button": ->
-      @$('.better').attr('disabled', true)
-      @model.get('currentPlayer').bet(20)
-    "click .bet50-button": ->
-      @$('.better').attr('disabled', true)
-      @model.get('currentPlayer').bet(50)
-    "click .bet100-button": ->
-      @$('.better').attr('disabled', true)
-      @model.get('currentPlayer').bet(100)
+    "click .better": (event) ->
+      @toggleButtons()
+      @model.get('currentPlayer').bet($(event.currentTarget).data('amount'))
 
   initialize: ->
-    @listenTo @model, 'newRound', => @reenableButtons()
+    @listenTo @model, 'newRound', => @toggleButtons()
     @render()
 
-  reenableButtons: ->
-    @$('.better').removeAttr('disabled')
+  toggleButtons: ->
+    @$('button').each (index, button) ->
+      button = $(button)
+      if button.attr('disabled') then button.removeAttr('disabled') else button.attr('disabled', true)
 
   render: ->
     @$el.children().detach()
-    @$el.append $('<button class="hit-button">Hit</button> <button class="stand-button">Stand</button>')
-    @$el.append $('<button class="better bet10-button">Bet 10%</button>')
-    @$el.append $('<button class="better bet20-button">Bet 20%</button>')
-    @$el.append $('<button class="better bet50-button">Bet 50%</button>')
-    @$el.append $('<button class="better bet100-button">Bet 100%</button>')
+    @$el.append $('<button class="hit-button" disabled>Hit</button> <button class="stand-button" disabled>Stand</button>')
+    @$el.append $('<button class="better bet10-button">Bet 10%</button>').data('amount', 10)
+    @$el.append $('<button class="better bet20-button">Bet 20%</button>').data('amount', 20)
+    @$el.append $('<button class="better bet50-button">Bet 50%</button>').data('amount', 50)
+    @$el.append $('<button class="better bet100-button">Bet 100%</button>').data('amount', 100)
     (@model.get 'players').each (player) =>
       container = (if player.get 'isDealer' then '.deal' else '.play') + 'er-hand-container'
       playerView = new PlayerView {model: player}

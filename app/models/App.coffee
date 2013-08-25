@@ -38,6 +38,14 @@ class window.App extends Backbone.Model
 
   addCardToPlayer: (player) -> (@get 'deck').hitPlayer player
 
+  chooseDealerAction: ->
+    scores = ((@get 'currentPlayer').get 'hand').actualScores()
+    score = _.max (score for score in scores when score < 22)
+    if score < 17
+      (@get 'currentPlayer').hit()
+    else
+      (@get 'currentPlayer').stand()
+
   nextTurn: ->
     index = (@get 'players').models.indexOf(@get 'currentPlayer')
     @set 'currentPlayer', (@get 'players').at(index+1) or (@get 'players').first()
@@ -51,7 +59,7 @@ class window.App extends Backbone.Model
         @nextTurn()
     else
       if (@get 'currentPlayer').get 'isDealer'
-        (@get 'currentPlayer').stand()
+        @chooseDealerAction()
 
   findWinners: ->
     winners = []
